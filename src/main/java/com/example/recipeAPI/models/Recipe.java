@@ -1,10 +1,11 @@
 package com.example.recipeAPI.models;
 
+import com.example.recipeAPI.services.RecipeService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -26,10 +27,16 @@ public class Recipe {
     private String name;
 
     @Column(nullable = false)
+    private String submittedBy;
+
+    @Column(nullable = false)
     private Integer minutesToMake;
 
     @Column(nullable = false)
     private Integer difficultyRating;
+
+    @Column
+    private Long averageRating;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id", nullable = false)
@@ -75,4 +82,5 @@ public class Recipe {
             // exception should stop here.
         }
     }
+
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/review")
@@ -59,6 +60,10 @@ public class ReviewController {
         try {
             Recipe insertedRecipe =
                     reviewService.postNewReview(review, recipeId);
+            if (Objects.equals(insertedRecipe.getSubmittedBy(), review.getUsername())) {
+                String response = "Reviewing your own recipes is fine for a retrospective, but keep that to yourself!";
+                return ResponseEntity.badRequest().body(response);
+            }
             return ResponseEntity.created(
                     insertedRecipe.getLocationURI()).body(insertedRecipe);
         } catch (NoSuchRecipeException e) {

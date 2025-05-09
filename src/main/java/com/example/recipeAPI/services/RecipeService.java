@@ -1,7 +1,9 @@
 package com.example.recipeAPI.services;
 
 import com.example.recipeAPI.exceptions.NoSuchRecipeException;
+import com.example.recipeAPI.exceptions.NoSuchReviewException;
 import com.example.recipeAPI.models.Recipe;
+import com.example.recipeAPI.models.Review;
 import com.example.recipeAPI.repositories.RecipeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class RecipeService {
 
     @Autowired
     RecipeRepo recipeRepo;
+
+    @Autowired
+    ReviewService reviewService;
 
     @Transactional
     public Recipe createNewRecipe(Recipe recipe)
@@ -50,6 +55,20 @@ public class RecipeService {
 
         return matchingRecipes;
     }
+
+    public List<Recipe> getRecipesByUsername(String username)
+            throws NoSuchRecipeException {
+        List<Recipe> matchingRecipes =
+                recipeRepo.findBySubmittedByContainingIgnoreCase(username);
+
+        if (matchingRecipes.isEmpty()) {
+            throw new NoSuchRecipeException(
+                    "No recipes by that username could be found.");
+        }
+
+        return matchingRecipes;
+    }
+
 
     public List<Recipe> getAllRecipes() throws NoSuchRecipeException {
         List<Recipe> recipes = recipeRepo.findAll();
@@ -91,4 +110,24 @@ public class RecipeService {
                             "Or maybe you meant to POST a recipe not PATCH one.");
         }
     }
+
+    public long calculateAverageRating(Recipe recipe) {
+
+        long meanAverage = 0;
+
+        try {
+            int ratingsTemp = 0;
+            List<Review> reviewsForRecipe = reviewService.getReviewByRecipeId(recipe.getId());
+            for (int i = 0; i < reviewsForRecipe.size(); i++) {
+                ratingsTemp = ratingsTemp + reviewsForRecipe.get(i).getRating();
+            }
+            meanAverage = (ratingsTemp / reviewsForRecipe.size());
+        } catch (NoSuchRecipeException | NoSuchReviewException e) {
+            throw new RuntimeException(e);
+        }
+
+        return meanAverage;
+
+    }
+
 }
