@@ -111,7 +111,7 @@ public class RecipeService {
         }
     }
 
-    public long calculateAverageRating(Recipe recipe) {
+    public void calculateAverageRating(Recipe recipe) {
 
         long meanAverage = 0;
 
@@ -126,7 +126,7 @@ public class RecipeService {
             throw new RuntimeException(e);
         }
 
-        return meanAverage;
+        recipe.setAverageRating(meanAverage);
 
     }
 

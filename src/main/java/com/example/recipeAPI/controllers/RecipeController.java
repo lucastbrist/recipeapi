@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -79,19 +80,47 @@ public class RecipeController {
         }
     }
 
-//    @GetMapping("/search/rating/{rating}")
-//    public ResponseEntity<?> getRecipesByAverageRating(
-//            @PathVariable("rating") Long rating) {
-//        try {
-//            List<Recipe> matchingRecipes =
-//                    recipeService.get;
-//            return ResponseEntity.ok(matchingRecipes);
-//        } catch (NoSuchRecipeException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.NOT_FOUND)
-//                    .body(e.getMessage());
-//        }
-//    }
+    @GetMapping("/search/average/{rating}")
+    public ResponseEntity<?> getRecipesByMinimumAverageRating(
+            @PathVariable("rating") Long rating) {
+
+        ArrayList<Recipe> matchingRecipes = new ArrayList<>();
+
+        List<Recipe> allRecipes = null;
+        try {
+            allRecipes = recipeService.getAllRecipes();
+        } catch (NoSuchRecipeException e) {
+            throw new RuntimeException(e);
+        }
+        for (Recipe allRecipe : allRecipes) {
+            recipeService.calculateAverageRating(allRecipe);
+            if (allRecipe.getAverageRating() >= rating) {
+                matchingRecipes.add(allRecipe);
+            }
+        }
+        return ResponseEntity.ok(matchingRecipes);
+    }
+
+    @GetMapping("/search/{name}/{diff}")
+    public ResponseEntity<?> getRecipesByNameAndMaxDiff(
+            @PathVariable("name") String name, @PathVariable("diff") int diff){
+
+        ArrayList<Recipe> matchingRecipes = new ArrayList<>();
+        try {
+            List<Recipe> recipesByName =
+                    recipeService.getRecipesByName(name);
+            for (Recipe recipe : recipesByName) {
+                if (recipe.getDifficultyRating() >= diff) {
+                    matchingRecipes.add(recipe);
+                }
+            }
+            return ResponseEntity.ok(matchingRecipes);
+        } catch (NoSuchRecipeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRecipeById(
