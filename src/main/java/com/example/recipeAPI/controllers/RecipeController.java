@@ -80,27 +80,6 @@ public class RecipeController {
         }
     }
 
-    @GetMapping("/search/average/{rating}")
-    public ResponseEntity<?> getRecipesByMinimumAverageRating(
-            @PathVariable("rating") Long rating) {
-
-        ArrayList<Recipe> matchingRecipes = new ArrayList<>();
-
-        List<Recipe> allRecipes = null;
-        try {
-            allRecipes = recipeService.getAllRecipes();
-        } catch (NoSuchRecipeException e) {
-            throw new RuntimeException(e);
-        }
-        for (Recipe allRecipe : allRecipes) {
-            recipeService.calculateAverageRating(allRecipe);
-            if (allRecipe.getAverageRating() >= rating) {
-                matchingRecipes.add(allRecipe);
-            }
-        }
-        return ResponseEntity.ok(matchingRecipes);
-    }
-
     @GetMapping("/search/{name}/{diff}")
     public ResponseEntity<?> getRecipesByNameAndMaxDiff(
             @PathVariable("name") String name, @PathVariable("diff") int diff){

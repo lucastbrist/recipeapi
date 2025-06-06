@@ -4,11 +4,13 @@ import com.example.recipeAPI.exceptions.NoSuchRecipeException;
 import com.example.recipeAPI.exceptions.NoSuchReviewException;
 import com.example.recipeAPI.models.Recipe;
 import com.example.recipeAPI.models.Review;
+import com.example.recipeAPI.services.RecipeService;
 import com.example.recipeAPI.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +20,9 @@ public class ReviewController {
 
     @Autowired
     ReviewService reviewService;
+
+    @Autowired
+    RecipeService recipeService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getReviewById(@PathVariable("id") Long id) {
@@ -93,4 +98,26 @@ public class ReviewController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/search/average/{rating}")
+    public ResponseEntity<?> getRecipesByMinimumAverageRating(
+            @PathVariable("rating") Long rating) {
+
+        ArrayList<Recipe> matchingRecipes = new ArrayList<>();
+
+        List<Recipe> allRecipes = null;
+        try {
+            allRecipes = recipeService.getAllRecipes();
+        } catch (NoSuchRecipeException e) {
+            throw new RuntimeException(e);
+        }
+        for (Recipe recipe : allRecipes) {
+            reviewService.calculateAverageRating(recipe);
+            if (recipe.getAverageRating() >= rating) {
+                matchingRecipes.add(recipe);
+            }
+        }
+        return ResponseEntity.ok(matchingRecipes);
+    }
+
 }

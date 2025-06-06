@@ -1,10 +1,8 @@
 package com.example.recipeAPI.models;
 
-import com.example.recipeAPI.services.RecipeService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,10 +61,10 @@ public class Recipe {
     }
 
     public void validate() throws IllegalStateException {
-        if (ingredients.size() == 0) {
+        if (ingredients.isEmpty()) {
             throw new IllegalStateException(
                     "You need at least one ingredient for your recipe!");
-        } else if (steps.size() == 0) {
+        } else if (steps.isEmpty()) {
             throw new IllegalStateException(
                     "You need at least one step for your recipe!");
         }
@@ -81,6 +79,13 @@ public class Recipe {
         } catch (URISyntaxException e) {
             // exception should stop here.
         }
+    }
+
+    public URI getLocationURI() {
+
+        this.generateLocationURI();
+        return this.locationURI;
+
     }
 
 }

@@ -18,9 +18,6 @@ public class RecipeService {
     @Autowired
     RecipeRepo recipeRepo;
 
-    @Autowired
-    ReviewService reviewService;
-
     @Transactional
     public Recipe createNewRecipe(Recipe recipe)
             throws IllegalStateException {
@@ -109,25 +106,6 @@ public class RecipeService {
                             "in the database. Double check that it is correct. " +
                             "Or maybe you meant to POST a recipe not PATCH one.");
         }
-    }
-
-    public void calculateAverageRating(Recipe recipe) {
-
-        long meanAverage = 0;
-
-        try {
-            int ratingsTemp = 0;
-            List<Review> reviewsForRecipe = reviewService.getReviewByRecipeId(recipe.getId());
-            for (int i = 0; i < reviewsForRecipe.size(); i++) {
-                ratingsTemp = ratingsTemp + reviewsForRecipe.get(i).getRating();
-            }
-            meanAverage = (ratingsTemp / reviewsForRecipe.size());
-        } catch (NoSuchRecipeException | NoSuchReviewException e) {
-            throw new RuntimeException(e);
-        }
-
-        recipe.setAverageRating(meanAverage);
-
     }
 
 }

@@ -86,4 +86,24 @@ public class ReviewService {
         reviewRepo.save(reviewToUpdate);
         return reviewToUpdate;
     }
+
+    public void calculateAverageRating(Recipe recipe) {
+
+        long meanAverage = 0;
+
+        try {
+            int ratingsTemp = 0;
+            List<Review> reviewsForRecipe = this.getReviewByRecipeId(recipe.getId());
+            for (int i = 0; i < reviewsForRecipe.size(); i++) {
+                ratingsTemp = ratingsTemp + reviewsForRecipe.get(i).getRating();
+            }
+            meanAverage = (ratingsTemp / reviewsForRecipe.size());
+        } catch (NoSuchRecipeException | NoSuchReviewException e) {
+            throw new RuntimeException(e);
+        }
+
+        recipe.setAverageRating(meanAverage);
+
+    }
+
 }
