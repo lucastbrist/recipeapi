@@ -52,7 +52,7 @@ public class RecipeDataLoader implements CommandLineRunner {
                     .ingredients(Set.of(ingredient))
                     .steps(Set.of(step1, step2))
                     .reviews(Set.of(review))
-                    .submittedBy("bob")
+                    .author("bob")
                     .build();
 
             recipeRepo.save(recipe1);
@@ -70,7 +70,7 @@ public class RecipeDataLoader implements CommandLineRunner {
                     .name("another test recipe")
                     .difficultyRating(10)
                     .minutesToMake(2)
-                    .submittedBy("Sally")
+                    .author("Sally")
                     .build();
             recipeRepo.save(recipe2);
 
@@ -86,7 +86,7 @@ public class RecipeDataLoader implements CommandLineRunner {
                     .name("another another test recipe")
                     .difficultyRating(5)
                     .minutesToMake(2)
-                    .submittedBy("Mark")
+                    .author("Mark")
                     .build();
 
             recipeRepo.save(recipe3);
@@ -113,7 +113,7 @@ public class RecipeDataLoader implements CommandLineRunner {
                             .rating(10)
                             .description("this stuff is so good")
                             .build()))
-                    .submittedBy("Billy")
+                    .author("Billy")
                     .build();
 
             recipeRepo.save(recipe4);

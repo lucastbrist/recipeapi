@@ -1,8 +1,7 @@
 package com.example.recipeAPI.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -18,8 +17,10 @@ public class Review {
     @GeneratedValue
     private Long id;
 
-    @NotNull
-    private String username;
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private CustomUserDetails user;
 
     private int rating;
 
@@ -32,4 +33,13 @@ public class Review {
         }
         this.rating = rating;
     }
+
+    public String getAuthor() {
+        return user.getUsername();
+    }
+
+    public void setAuthor(String username) {
+        user.setUsername(username);
+    }
+
 }

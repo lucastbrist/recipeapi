@@ -2,10 +2,13 @@ package com.example.recipeAPI.services;
 
 import com.example.recipeAPI.exceptions.NoSuchRecipeException;
 import com.example.recipeAPI.exceptions.NoSuchReviewException;
+import com.example.recipeAPI.models.CustomUserDetails;
 import com.example.recipeAPI.models.Recipe;
 import com.example.recipeAPI.models.Review;
 import com.example.recipeAPI.repositories.ReviewRepo;
+import com.example.recipeAPI.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class ReviewService {
 
     @Autowired
     RecipeService recipeService;
+
+    @Autowired
+    UserRepo userRepo;
 
     public Review getReviewById(Long id) throws NoSuchReviewException {
         Optional<Review> review = reviewRepo.findById(id);
@@ -45,11 +51,14 @@ public class ReviewService {
 
     public List<Review> getReviewByUsername(String username)
             throws NoSuchReviewException {
-        List<Review> reviews = reviewRepo.findByUsername(username);
+
+        CustomUserDetails user = userRepo.findByUsername(username);
+
+        List<Review> reviews = reviewRepo.findByUser(user);
 
         if (reviews.isEmpty()) {
             throw new NoSuchReviewException(
-                    "No reviews could be found for username " + username);
+                    "No reviews could be found for username " + user.getUsername());
         }
         return reviews;
     }

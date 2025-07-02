@@ -174,7 +174,7 @@ class RecipeApiApplicationTests {
 				.ingredients(Set.of(ingredient))
 				.steps(Set.of(step1, step2))
 				.reviews(Set.of(review))
-				.submittedBy("idk")
+				.author("idk")
 				.build();
 
 		MockHttpServletResponse response = mockMvc

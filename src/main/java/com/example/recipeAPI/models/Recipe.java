@@ -24,8 +24,10 @@ public class Recipe {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String submittedBy;
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private CustomUserDetails user;
 
     @Column(nullable = false)
     private Integer minutesToMake;
@@ -86,6 +88,14 @@ public class Recipe {
         this.generateLocationURI();
         return this.locationURI;
 
+    }
+
+    public String getAuthor() {
+        return user.getUsername();
+    }
+
+    public void setAuthor(String username) {
+        user.setUsername(username);
     }
 
 }
