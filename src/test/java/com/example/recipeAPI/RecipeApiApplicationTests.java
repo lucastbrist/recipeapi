@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.Set;
+
+import com.example.recipeAPI.models.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,11 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import com.example.recipeAPI.models.Ingredient;
-import com.example.recipeAPI.models.Recipe;
-import com.example.recipeAPI.models.Review;
-import com.example.recipeAPI.models.Step;
 import com.example.recipeAPI.repositories.RecipeRepo;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -161,10 +160,14 @@ class RecipeApiApplicationTests {
 				.stepNumber(2)
 				.build();
 
+		CustomUserDetails user1 = CustomUserDetails.builder()
+				.username("idk")
+				.build();
+
 		Review review = Review.builder()
 				.description("was just caramel")
 				.rating(3)
-				.username("idk")
+				.user(user1)
 				.build();
 
 		Recipe recipe = Recipe.builder()
@@ -174,7 +177,7 @@ class RecipeApiApplicationTests {
 				.ingredients(Set.of(ingredient))
 				.steps(Set.of(step1, step2))
 				.reviews(Set.of(review))
-				.author("idk")
+				.user(user1)
 				.build();
 
 		MockHttpServletResponse response = mockMvc
